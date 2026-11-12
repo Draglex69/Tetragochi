@@ -1,5 +1,7 @@
 # Tetragotchi
 
+**Play now: https://draglex69.github.io/Tetragochi/**
+
 Tetris with a virtual pet: adopt a cat, play blocks to the beat of its own songs, feed and pet it, decorate its home, and play Party mode with up to four players.
 
 Written, designed and vibecoded by Alexander Tea.
@@ -40,9 +42,8 @@ Keep a backup of the keystore and its password somewhere safe; every future Play
 
 Note: an app signed with the debug key can't be updated in place by one signed with the upload key. Uninstall the debug build first; export your progress with Save / Load and load it back afterwards.
 
-## Web version
+## Play in the browser
 
-Every build also makes `Tetragotchi-vNN-web.zip`: the same game as an installable web app that works offline. Two ways to put it online:
+**https://draglex69.github.io/Tetragochi/**: the same game as the APK, updated on every push to `main`. It works offline after the first visit, and on Android, Chrome's menu → **Install app** puts it on your home screen.
 
-- **GitHub Pages:** Settings → Pages → Source: **GitHub Actions**, then Settings → Secrets and variables → Actions → **Variables** → New variable `PAGES_ENABLED` = `true`. The next push publishes it at your Pages address. For a private repository this needs a paid GitHub plan.
-- **Cloudflare Pages:** Workers & Pages → Create → Pages → Upload assets, then drop in the files from the zip.
+It's published with GitHub Pages (Settings → Pages → Source: **GitHub Actions**). Every release also carries `Tetragotchi-vNN-web.zip`, which runs on any static host such as Cloudflare Pages.

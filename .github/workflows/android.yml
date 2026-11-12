@@ -88,12 +88,10 @@ jobs:
         with:
           path: site
 
-  # Publishes the web version with GitHub Pages. To turn it on: Settings > Pages > Source: GitHub Actions,
-  # then Settings > Secrets and variables > Actions > Variables > New variable PAGES_ENABLED = true.
-  # (Pages for a private repository needs a paid GitHub plan; the APK build works either way.)
+  # Publishes the web version at https://draglex69.github.io/Tetragochi/ (Settings > Pages > Source: GitHub Actions).
+  # If Pages is off this step fails on its own; the APK, AAB and release are unaffected.
   web:
     needs: build
-    if: vars.PAGES_ENABLED == 'true'
     runs-on: ubuntu-latest
     continue-on-error: true
     permissions:
