@@ -61,6 +61,12 @@ jobs:
           cp app/build/outputs/apk/release/app-release.apk "out/Tetragotchi-$VER.apk"
           cp app/build/outputs/bundle/release/app-release.aab "out/Tetragotchi-$VER.aab"
 
+      - name: Build the web version (installable, works offline)
+        run: |
+          python3 pwa/build_pwa.py web/tetris.html site
+          cp -r web/fonts site/
+          (cd site && zip -qr "../out/Tetragotchi-$VER-web.zip" .)
+
       - uses: actions/upload-artifact@v4
         with:
           name: Tetragotchi-${{ env.VER }}
@@ -70,10 +76,30 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          NOTES="Tetragotchi $VER for Android. Install Tetragotchi-$VER.apk on your phone; upload the .aab to Google Play. Signed with: $SIGNED."
+          NOTES="Tetragotchi $VER. Install Tetragotchi-$VER.apk on your phone; upload the .aab to Google Play; Tetragotchi-$VER-web.zip is the web version for any static host. Signed with: $SIGNED."
           if gh release view "$VER" >/dev/null 2>&1; then
             gh release upload "$VER" out/* --clobber
             gh release edit "$VER" --notes "$NOTES"
           else
             gh release create "$VER" out/* --title "Tetragotchi $VER" --notes "$NOTES" --latest
           fi
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  # Publishes the web version with GitHub Pages. Turn it on once: Settings > Pages > Source: GitHub Actions.
+  # (Pages for a private repository needs a paid GitHub plan; the APK build works either way.)
+  web:
+    needs: build
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4

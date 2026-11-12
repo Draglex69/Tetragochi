@@ -18,7 +18,8 @@ The `.aab` file in the same release is for Google Play.
 | `web/fonts/` | Pixelify Sans (SIL Open Font License), bundled so the app works offline. |
 | `tools/build_web.py` | Copies the game and fonts into the app. |
 | `app/` | A small Android app that runs the game full screen and offline. It adds the back button, saving codes to Downloads, clipboard copy and paste, and opening save files. |
-| `.github/workflows/android.yml` | Builds the APK and AAB on every push to `main` and attaches them to a release named after the game's version label. |
+| `pwa/` | The web version: manifest, offline service worker, icons and store screenshots. |
+| `.github/workflows/android.yml` | On every push to `main`: builds the APK, the AAB and the web version, attaches all three to a release named after the game's version label, and publishes the web version with GitHub Pages when Pages is turned on. |
 
 To ship a new version: replace `web/tetris.html` with the new game (its `vNN` label sets the app version) and push. The release appears under **Releases** a few minutes later.
 
@@ -38,3 +39,10 @@ Without signing secrets, builds use a debug key, which is fine for installing on
 Keep a backup of the keystore and its password somewhere safe; every future Play update must be signed with it. Never commit it to this repository.
 
 Note: an app signed with the debug key can't be updated in place by one signed with the upload key. Uninstall the debug build first; export your progress with Save / Load and load it back afterwards.
+
+## Web version
+
+Every build also makes `Tetragotchi-vNN-web.zip`: the same game as an installable web app that works offline. Two ways to put it online:
+
+- **GitHub Pages:** Settings → Pages → Source: **GitHub Actions**. The next push publishes it at your Pages address. For a private repository this needs a paid GitHub plan.
+- **Cloudflare Pages:** Workers & Pages → Create → Pages → Upload assets, then drop in the files from the zip.

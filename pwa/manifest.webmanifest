@@ -1,0 +1,29 @@
+{
+  "id": "./",
+  "name": "Tetragotchi",
+  "short_name": "Tetragotchi",
+  "description": "Tetris with a virtual pet. Adopt a cat, play blocks to the beat, feed and pet it, and play Party mode with up to four players.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "any",
+  "background_color": "#1c332e",
+  "theme_color": "#1c332e",
+  "categories": ["games", "entertainment"],
+  "lang": "en",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "screenshots": [
+    { "src": "screenshots/start-portrait.png", "sizes": "824x1830", "type": "image/png", "form_factor": "narrow", "label": "Choose your pet" },
+    { "src": "screenshots/game-portrait.png", "sizes": "824x1830", "type": "image/png", "form_factor": "narrow", "label": "Play blocks to the beat" },
+    { "src": "screenshots/home-portrait.png", "sizes": "824x1830", "type": "image/png", "form_factor": "narrow", "label": "Your pets at home" },
+    { "src": "screenshots/start-landscape.png", "sizes": "1830x824", "type": "image/png", "form_factor": "wide", "label": "Choose your pet" },
+    { "src": "screenshots/game-landscape.png", "sizes": "1830x824", "type": "image/png", "form_factor": "wide", "label": "Play blocks to the beat" }
+  ]
+}
