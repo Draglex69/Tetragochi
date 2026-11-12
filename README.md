@@ -44,5 +44,5 @@ Note: an app signed with the debug key can't be updated in place by one signed w
 
 Every build also makes `Tetragotchi-vNN-web.zip`: the same game as an installable web app that works offline. Two ways to put it online:
 
-- **GitHub Pages:** Settings → Pages → Source: **GitHub Actions**. The next push publishes it at your Pages address. For a private repository this needs a paid GitHub plan.
+- **GitHub Pages:** Settings → Pages → Source: **GitHub Actions**, then Settings → Secrets and variables → Actions → **Variables** → New variable `PAGES_ENABLED` = `true`. The next push publishes it at your Pages address. For a private repository this needs a paid GitHub plan.
 - **Cloudflare Pages:** Workers & Pages → Create → Pages → Upload assets, then drop in the files from the zip.
