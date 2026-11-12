@@ -1,0 +1,79 @@
+name: Build Android app
+
+# Every push to main builds the APK (to install on a phone) and the AAB (for Google Play)
+# and attaches both to a GitHub Release named after the game's version label (v51, v52, ...).
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-build
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+
+      - name: Bundle the game into the app
+        run: python3 tools/build_web.py
+
+      - name: Signing key
+        env:
+          KEYSTORE_B64: ${{ secrets.TG_KEYSTORE_BASE64 }}
+          STORE_PW: ${{ secrets.TG_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.TG_KEY_ALIAS }}
+          KEY_PW: ${{ secrets.TG_KEY_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/upload.jks"
+            echo "TG_KEYSTORE=$RUNNER_TEMP/upload.jks" >> "$GITHUB_ENV"
+            echo "TG_STORE_PASSWORD=$STORE_PW" >> "$GITHUB_ENV"
+            echo "TG_KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
+            echo "TG_KEY_PASSWORD=$KEY_PW" >> "$GITHUB_ENV"
+            echo "SIGNED=upload key" >> "$GITHUB_ENV"
+          else
+            echo "SIGNED=debug key (add the TG_* secrets to sign for Google Play)" >> "$GITHUB_ENV"
+          fi
+
+      - name: Build APK and AAB
+        run: gradle --no-daemon assembleRelease bundleRelease
+
+      - name: Name the files
+        run: |
+          VER=$(grep -oP '<span id="ver"[^>]*>\Kv[0-9]+' web/tetris.html | head -1)
+          echo "VER=$VER" >> "$GITHUB_ENV"
+          mkdir -p out
+          cp app/build/outputs/apk/release/app-release.apk "out/Tetragotchi-$VER.apk"
+          cp app/build/outputs/bundle/release/app-release.aab "out/Tetragotchi-$VER.aab"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Tetragotchi-${{ env.VER }}
+          path: out/*
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          NOTES="Tetragotchi $VER for Android. Install Tetragotchi-$VER.apk on your phone; upload the .aab to Google Play. Signed with: $SIGNED."
+          if gh release view "$VER" >/dev/null 2>&1; then
+            gh release upload "$VER" out/* --clobber
+            gh release edit "$VER" --notes "$NOTES"
+          else
+            gh release create "$VER" out/* --title "Tetragotchi $VER" --notes "$NOTES" --latest
+          fi

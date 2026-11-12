@@ -1,0 +1,51 @@
+plugins {
+    id 'com.android.application'
+}
+
+// The version comes from the "vNN" label in web/tetris.html, so the app and the game always match.
+def webVersion = {
+    def m = (file('../web/tetris.html').getText('UTF-8') =~ /<span id="ver"[^>]*>v(\d+)<\/span>/)
+    m.find() ? m.group(1).toInteger() : 1
+}()
+def keystorePath = System.getenv('TG_KEYSTORE')
+
+android {
+    namespace 'io.github.draglex69.tetragotchi'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'io.github.draglex69.tetragotchi'
+        minSdk 24
+        targetSdk 35
+        versionCode webVersion
+        versionName "v${webVersion}"
+    }
+
+    signingConfigs {
+        release {
+            if (keystorePath) {
+                storeFile file(keystorePath)
+                storePassword System.getenv('TG_STORE_PASSWORD')
+                keyAlias System.getenv('TG_KEY_ALIAS')
+                keyPassword System.getenv('TG_KEY_PASSWORD')
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            // signed with your upload key when the GitHub secrets are set, otherwise with a debug key (fine for sideloading)
+            signingConfig keystorePath ? signingConfigs.release : signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'androidx.webkit:webkit:1.12.1'
+}

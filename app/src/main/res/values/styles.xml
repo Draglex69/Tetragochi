@@ -1,0 +1,9 @@
+<resources>
+    <color name="ic_bg">#1C332E</color>
+    <color name="felt">#1C332E</color>
+    <style name="AppTheme" parent="@android:style/Theme.Material.NoActionBar.Fullscreen">
+        <item name="android:windowBackground">@color/felt</item>
+        <item name="android:statusBarColor">@color/felt</item>
+        <item name="android:navigationBarColor">@color/felt</item>
+    </style>
+</resources>
